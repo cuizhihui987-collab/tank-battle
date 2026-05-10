@@ -69,6 +69,13 @@ export function spawnEnemy() {
     if (Math.abs(e.x - sp[0]) < TILE * 2 && Math.abs(e.y - sp[1]) < TILE * 2) return;
   }
   if (G.player && G.player.alive && Math.abs(G.player.x - sp[0]) < TILE * 2 && Math.abs(G.player.y - sp[1]) < TILE * 2) return;
+  // Check wall collision at spawn point
+  const tankW = TILE - 2;
+  for (const w of G.walls) {
+    if (!w.alive) continue;
+    if (sp[0] < w.x + w.w && sp[0] + tankW > w.x &&
+        sp[1] < w.y + w.h && sp[1] + tankW > w.y) return;
+  }
 
   let hp = 1;
   let speed = 1.2;

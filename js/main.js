@@ -85,6 +85,18 @@ function findSafeSpawn(avoidEnemies = true) {
         }
       }
     }
+    if (safe) {
+      // Check wall collision at spawn point
+      const tankW = TILE - 2;
+      for (const w of G.walls) {
+        if (!w.alive) continue;
+        if (s[0] < w.x + w.w && s[0] + tankW > w.x &&
+            s[1] < w.y + w.h && s[1] + tankW > w.y) {
+          safe = false;
+          break;
+        }
+      }
+    }
     if (safe) return s;
   }
   return spawns[0];
@@ -100,24 +112,18 @@ function respawnPlayer() {
 function respawnPlayer2() {
   // Use the spawn furthest from player 1
   const candidates = [[TILE, TILE], [TILE * 18, TILE], [TILE * 9, TILE * 18], [TILE * 9, TILE]];
-  let best = candidates[0], bestDist = 0;
+  let best = candidates[0], bestDist = -1;
   for (const s of candidates) {
     let safe = true;
-    if (G.player && G.player.alive) {
-      const d = Math.abs(s[0] - G.player.x) + Math.abs(s[1] - G.player.y);
-      if (d > bestDist) { bestDist = d; best = s; }
-    }
     for (const e of G.enemies) {
       if (!e.alive) continue;
       if (Math.abs(s[0] - e.x) < TILE * 2 && Math.abs(s[1] - e.y) < TILE * 2) { safe = false; break; }
     }
     if (!safe) continue;
-    if (G.player && G.player.alive) {
-      const d = Math.abs(s[0] - G.player.x) + Math.abs(s[1] - G.player.y);
-      if (d > bestDist) { bestDist = d; best = s; }
-    }
-    best = s;
-    break;
+    const d = G.player && G.player.alive
+      ? Math.abs(s[0] - G.player.x) + Math.abs(s[1] - G.player.y)
+      : 0;
+    if (d > bestDist) { bestDist = d; best = s; }
   }
   G.player2 = new Tank(best[0], best[1], '#3498db', true);
   G.player2.isPlayer2 = true;

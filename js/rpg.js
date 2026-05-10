@@ -224,10 +224,10 @@ export function updateBuffs() {
   }
   if (sk.powerShot.cooldown > 0) sk.powerShot.cooldown--;
 
-  // Shield from item buffs
+  // Shield from item buffs (renew to full 3s while active)
   const hasShieldBuff = rpg.buffs.some(b => b.type === 'shield');
   if (hasShieldBuff && G.player) {
-    G.player.shieldTimer = Math.max(G.player.shieldTimer, 3);
+    G.player.shieldTimer = Math.max(G.player.shieldTimer, 180);
   }
 }
 

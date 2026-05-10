@@ -130,6 +130,8 @@ export class Tank {
   }
 
   takeDamage(damage) {
+    if (!this.alive) return;
+
     // Player uses RPG HP system
     if (this.isPlayer && G.playerRPG) {
       if (this.shieldTimer > 0) return;
